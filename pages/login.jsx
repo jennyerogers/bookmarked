@@ -28,6 +28,7 @@ export default function Login(props) {
     username: "",
     password: "",
   });
+  
   const [error, setError] = useState("");
   function handleChange(e) {
     setForm({ username, password, ...{ [e.target.name]: e.target.value } });
@@ -60,21 +61,11 @@ export default function Login(props) {
       <Header isLoggedIn={props.isLoggedIn} username={props?.user?.username} />
 
       <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to the <a href="https://nextjs.org">Next.js</a> Login Page!
+        <h1>
+          Log in
         </h1>
 
-        <p className={styles.description}>
-          Current Location: <code className={styles.code}>{router.asPath}</code>
-          <br />
-          Status:{" "}
-          <code className={styles.code}>
-            {!props.isLoggedIn && " Not"} Logged In
-          </code>
-        </p>
-
         <form
-          className={[styles.card, styles.form].join(" ")}
           onSubmit={handleLogin}
         >
           <label htmlFor="username">Username: </label>
@@ -100,19 +91,7 @@ export default function Login(props) {
           <p>Still need to sign up?</p>
         </Link>
       </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{" "}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
+      <Footer />
     </div>
   );
 }
