@@ -1,5 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
+import Header from "../components/Header";
+import Footer from "../components/footer";
 import { useRouter } from "next/router";
 import { withIronSessionSsr } from "iron-session/next";
 import sessionOptions from "../config/session";
@@ -32,7 +34,7 @@ export default function Home(props) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-     
+      <Header isLoggedIn={props.isLoggedIn} username={props?.user?.username} />
 
       <main >
         <h1 >
@@ -41,7 +43,7 @@ export default function Home(props) {
 
       </main>
 
-
+      <Footer/>
     </div>
     )
 }
