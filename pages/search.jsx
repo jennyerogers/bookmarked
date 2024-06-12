@@ -1,6 +1,6 @@
 import styles from "../styles/Search.module.css";
 import Header from "../components/Header";
-import Footer from "../components/Footer";
+
 import { useState } from "react";
 import Link from "next/link";
 import { withIronSessionSsr } from "iron-session/next";
@@ -95,7 +95,7 @@ export default function Search(props) {
             )}
           </div>
         </div>
-        <Footer />
+
       </main>
     </>
   );

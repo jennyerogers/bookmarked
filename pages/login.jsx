@@ -1,11 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import styles from "../styles/Home.module.css";
+// import styles from "../styles/Home.module.css";
 import { useRouter } from "next/router";
 import { withIronSessionSsr } from "iron-session/next";
 import sessionOptions from "../config/session";
-import Header from "../components/header";
+
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
@@ -43,7 +43,7 @@ export default function Login(props) {
         },
         body: JSON.stringify({ username, password }),
       });
-      if (res.status === 200) return router.push("/dashboard");
+      if (res.status === 200) return router.push("/");
       const { error: message } = await res.json();
       setError(message);
     } catch (err) {
@@ -58,7 +58,7 @@ export default function Login(props) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Header isLoggedIn={props.isLoggedIn} username={props?.user?.username} />
+
 
       <main className={styles.main}>
         <h1>
@@ -91,7 +91,7 @@ export default function Login(props) {
           <p>Still need to sign up?</p>
         </Link>
       </main>
-      <Footer />
+
     </div>
   );
 }

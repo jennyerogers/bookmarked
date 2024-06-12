@@ -47,7 +47,7 @@ async function signup(req, res) {
     } = await db.user.create(username, password)
     req.session.user = otherFields
     await req.session.save()
-    res.redirect('/dashboard')
+    res.redirect('/')
   } catch(err) {
     res.status(400).json({error: err.message})
   }

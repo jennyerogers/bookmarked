@@ -2,17 +2,28 @@
   "name": "bookmarked-app",
   "version": "0.1.0",
   "private": true,
+  "config": {
+    "DB_NAME": "book_search"
+  },
   "scripts": {
-    "dev": "next dev",
+    "dev": "npm run mongo && next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "mongo": "npm run mongo:restart && npm run mongo:check",
+    "mongo:restart": "npm run mongo:stop; npm run mongo:start",
+    "mongo:start": "docker run --rm -d -p 27017:27017 --name=mongo-sandbox -e MONGO_INITDB_DATABASE=$npm_package_config_DB_NAME mongo:5",
+    "mongo:stop": "docker container stop mongo-sandbox",
+    "mongo:start:shell": "npm run mongo && npm run mongo:shell",
+    "mongo:shell": "docker exec -it mongo-sandbox mongosh",
+    "mongo:check": "until docker exec -it mongo-sandbox mongosh --eval \"use $npm_package_config_DB_NAME;\"; do echo ...; sleep 1; done"
   },
   "dependencies": {
-    "iron-session": "^8.0.1",
+    "bcrypt": "^5.1.1",
+    "iron-session": "^6.3.1",
     "mongodb": "^6.7.0",
     "mongoose": "^8.4.1",
-    "next": "14.2.3",
+    "next": "^14.2.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
