@@ -1,122 +1,166 @@
-import React, { useState, useEffect } from "react";
-import { useRouter } from "next/router";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
+import Head from 'next/head'
+import { useRouter } from "next/router"
+import Link from 'next/link'
+import { useEffect } from 'react'
 import { withIronSessionSsr } from "iron-session/next";
 import sessionOptions from "../../config/session";
+import { useBookContext } from "../../context/book"
+import Header from '../../components/header'
+import db from '../../db'
+import styles from '../../styles/Book.module.css'
 
 export const getServerSideProps = withIronSessionSsr(
-  async function getServerSideProps({ req }) {
-    const user = req.session.user
-    const props = {}
+  async function getServerSideProps({ req, params }) {
+    const { user } = req.session;
+    const props = {};
     if (user) {
       props.user = req.session.user;
-      props.isLoggedIn = true;
-    } else {
-      props.isLoggedIn = false;
+      const book = await db.book.getByGoogleId(req.session.user.id, params.id)
+      if (book)
+        props.book = book
     }
+    props.isLoggedIn = !!user;
     return { props };
   },
   sessionOptions
 );
 
-export default function BookInfo(props) {
-  const router = useRouter();
-  const { id } = router.query;
-  const [bookInfo, setBookInfo] = useState(null);
+export default function Book(props) {
+  const router = useRouter()
+  const bookId = router.query.id
+  const { isLoggedIn } = props
+  const [{bookSearchResults}] = useBookContext()
 
-  async function handleInfo(bookId) {
-    try {
-      const res = await fetch(
-        `https://www.googleapis.com/books/v1/volumes/${bookId}`
-      );
-      const bookData = await res.json();
-      setBookInfo(bookData.volumeInfo);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  }
+  let isFavoriteBook = false
+  let book
+  if (props.book) {
+    book = props.book
+    isFavoriteBook = true
+  } else
+    book = bookSearchResults.find(book => book.googleId === bookId)
 
+  // No book from search/context or getServerSideProps/favorites, redirect to Homepage
   useEffect(() => {
-    if (id) {
-      handleInfo(id);
-    }
-  }, [id]);
+    if (!props.book && !book)
+      router.push('/')
+  }, [props.book, bookSearchResults, book, router])
 
-  async function addToBookshelf(e) {
-    e.preventDefault();
-    try {
-      const res = await fetch("/api/favorites", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id,
-          title: bookInfo.title,
-          authors: bookInfo.authors,
-          thumbnail: bookInfo.imageLinks?.thumbnail,
-        }),
-      });
-      if (res.status === 200) {
-        router.replace(router.asPath);
-        console.log("Book added to bookshelf:", bookInfo);
-      } else {
-        const errorData = await res.json();
-        console.error("Error adding book to bookshelf:", errorData.error);
-      }
-    } catch (error) {
-      console.error("Error adding book to bookshelf:", error);
+  async function addToFavorites() {
+    const response = await fetch('/api/book', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(book),
+    });
+
+    if (response.ok) {
+      router.replace(router.asPath);
     }
   }
 
-  async function removeFromBookshelf(e) {
-    e.preventDefault();
-    try {
-      const res = await fetch("/api/favorites", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id }),
-      });
-      if (res.status === 200) {
-        router.replace(router.asPath);
-        console.log("Book removed from bookshelf:", bookInfo);
-      } else {
-        const errorData = await res.json();
-        console.error("Error removing book from bookshelf:", errorData.error);
-      }
-    } catch (error) {
-      console.error("Error removing book from favorites:", error);
+  async function removeFromFavorites() {
+    const response = await fetch('/api/book', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id: bookId }),
+    });
+
+    if (response.ok) {
+      router.replace(router.asPath);
     }
   }
 
   return (
     <>
-      <main>
-        <Header isLoggedIn={props.isLoggedIn} />
-        <div>
-          {bookInfo ? (
-            <>
-              <h1>{bookInfo.title}</h1>
-              <img src={bookInfo.imageLinks?.thumbnail} alt="Book Thumbnail" />
-              <p>Authors: {bookInfo.authors?.join(", ")}</p>
-              <p>Published Date: {bookInfo.publishedDate}</p>
-              <p>Description: {bookInfo.description}</p>
-              <button onClick={addToBookshelf}>
-                Add to Favorites
-              </button>
-              <button onClick={removeFromBookshelf}>
-                Remove from Favorites
-              </button>
-            </>
-          ) : id ? (
-            <p>Loading...</p>
-          ) : null}
-        </div>
-        <Footer />
-      </main>
+      <Head>
+        <title>Booker Book</title>
+        <meta name="description" content="Viewing a book on booker" />
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>" />
+        {/* <link rel="icon" href="/favicon.ico" /> */}
+      </Head>
+      <Header isLoggedIn={isLoggedIn} />
+      {
+        book &&
+        <main>
+          <BookInfo isFavorite={isFavoriteBook} {...book}/>
+          <div className={styles.controls}>
+            {
+              !isLoggedIn
+              ? <>
+                  <p>Want to add this book to your favorites?</p>
+                  <Link href="/login" className="button">Login</Link>
+                </>
+              : isFavoriteBook
+              ? <button onClick={removeFromFavorites}>
+                  Remove from Favorites
+                </button>
+              : <button onClick={addToFavorites}>
+                  Add to Favorites
+                </button>
+            }
+
+            <a href="#" onClick={() => router.back()}>
+              Return
+            </a>
+          </div>
+        </main>
+      }
     </>
-  );
+  )
+}
+
+function BookInfo({
+  title,
+  authors,
+  thumbnail,
+  description,
+  isFavorite,
+  pageCount,
+  categories,
+  previewLink
+}) {
+  return (
+    <>
+      <div className={styles.titleGroup}>
+        <div>
+          <h1>{title}{isFavorite && <sup>⭐</sup>}</h1>
+          {
+            authors && authors.length > 0 &&
+            <h2>By: {authors.join(", ").replace(/, ([^,]*)$/, ', and $1')}</h2>
+          }
+          {
+            categories && categories.length > 0 &&
+            <h3>Category: {categories.join(", ").replace(/, ([^,]*)$/, ', and $1')}</h3>
+          }
+        </div>
+        <a target="_BLANK"
+          href={previewLink}
+          className={styles.imgContainer}
+          rel="noreferrer">
+          <img src={thumbnail
+            ? thumbnail
+            : "https://via.placeholder.com/128x190?text=NO COVER"} alt={title} />
+          <span>Look Inside!</span>
+        </a>
+      </div>
+      <p>Description:<br/>{description}</p>
+      <p>Pages: {pageCount}</p>
+      <div className={styles.links}>
+        <span>Order online:</span>
+        <a target="_BLANK"
+          href={`https://www.amazon.com/s?k=${title} ${authors ? authors[0] : ""}`}
+          rel="noreferrer">
+          Amazon
+        </a>
+        <a target="_BLANK"
+          href={`https://www.barnesandnoble.com/s/${title} ${authors ? authors[0] : ""}`}
+          rel="noreferrer">
+          Barnes & Noble
+        </a>
+      </div>
+    </>
+  )
 }

@@ -9,7 +9,7 @@ import styles from "../styles/Favorites.module.css";
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
     const user = req.session.user;
-    const favorites = await db.book.getAllBooks(user.id)
+    const favorites = await db.favorites.getFavoriteBooks(user.id) //db/favorites/getFavoriteBooks
 
     const props = {};
     if (user) {
@@ -33,7 +33,7 @@ export default function Favorites(props) {
   return (
     <>
       <main>
-        <Header isLoggedIn={isLoggedIn} />
+        <Header isLoggedIn={props.isLoggedIn} />
         <div className={styles.container}>
           <h1>Favorites</h1>
           {bookShelf && bookShelf.length > 0 ? (

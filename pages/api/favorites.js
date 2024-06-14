@@ -23,7 +23,7 @@ export default withIronSessionApiRoute(
       case 'DELETE':
         try {
           const book = JSON.parse(req.body)
-          const deletedBook = await db.book.removeFromBookshelf(req.session.user.id, book.id)
+          const deletedBook = await db.favorites.removeFromBookshelf(req.session.user.id, book.id)
 
           if(deletedBook === null) {
             req.session.destroy()
