@@ -15,12 +15,7 @@ export async function addToFavoriteBooks(userId, book) {
   if (!user) {
     return null;
   }
-  const existingBook = user.bookShelf.find(
-    (bookRepeat) => bookRepeat.id === book.id
-  );
-  if (existingBook) {
-    return false;
-  }
+
   await User.findByIdAndUpdate(
     userId,
     { $addToSet: { bookShelf: book } },
@@ -39,3 +34,4 @@ export async function removeFavoriteBook(userId, bookId) {
   if (!user) return null;
   return true;
 }
+//this is good i think
