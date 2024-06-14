@@ -9,7 +9,7 @@ import styles from "../styles/Favorites.module.css";
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
     const user = req.session.user;
-    const favorites = await db.favorites.getFavoriteBooks(user.id) //db/favorites/getFavoriteBooks
+    const favorites = await db.favorites.getFavoriteBooks(user.id)
 
     const props = {};
     if (user) {

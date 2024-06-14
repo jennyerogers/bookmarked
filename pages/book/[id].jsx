@@ -1,52 +1,51 @@
-import Head from 'next/head'
-import { useRouter } from "next/router"
-import Link from 'next/link'
-import { useEffect } from 'react'
-import { withIronSessionSsr } from "iron-session/next";
-import sessionOptions from "../../config/session";
-import { useBookContext } from "../../context/book"
-import Header from '../../components/header'
-import db from '../../db'
-import styles from '../../styles/Book.module.css'
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import Head from 'next/head';
+import Link from 'next/link';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
+import { withIronSessionSsr } from 'iron-session/next';
+import sessionOptions from '../../config/session';
+import * as favoritesController from '../../db/controllers/favorites';
+import styles from '../../styles/Book.module.css';
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req, params }) {
     const { user } = req.session;
     const props = {};
+
     if (user) {
-      props.user = req.session.user;
-      const book = await db.book.getByGoogleId(req.session.user.id, params.id)
-      if (book)
-        props.book = book
+      const book = await favoritesController.getByGoogleId(user.id, params.id);
+      props.user = user;
+      props.book = book || null;
     }
+
     props.isLoggedIn = !!user;
     return { props };
   },
   sessionOptions
 );
 
-export default function Book(props) {
-  const router = useRouter()
-  const bookId = router.query.id
-  const { isLoggedIn } = props
-  const [{bookSearchResults}] = useBookContext()
+export default function Book({ user, isLoggedIn, book: serverBook }) {
+  const router = useRouter();
+  const { id: bookId } = router.query;
+  const [book, setBook] = useState(serverBook);
+  const [isFavorite, setIsFavorite] = useState(!!serverBook);
 
-  let isFavoriteBook = false
-  let book
-  if (props.book) {
-    book = props.book
-    isFavoriteBook = true
-  } else
-    book = bookSearchResults.find(book => book.googleId === bookId)
-
-  // No book from search/context or getServerSideProps/favorites, redirect to Homepage
   useEffect(() => {
-    if (!props.book && !book)
-      router.push('/')
-  }, [props.book, bookSearchResults, book, router])
+    if (!serverBook) {
+      fetchBookDetails();
+    }
+  }, [serverBook]);
 
-  async function addToFavorites() {
-    const response = await fetch('/api/book', {
+  const fetchBookDetails = async () => {
+    const response = await fetch(`/api/googlebooks/${bookId}`);
+    const data = await response.json();
+    setBook(data);
+  };
+
+  const handleAddToBookshelf = async () => {
+    const response = await fetch(`/api/favorites`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -55,12 +54,13 @@ export default function Book(props) {
     });
 
     if (response.ok) {
+      setIsFavorite(true);
       router.replace(router.asPath);
     }
-  }
+  };
 
-  async function removeFromFavorites() {
-    const response = await fetch('/api/book', {
+  const handleRemoveFromBookshelf = async () => {
+    const response = await fetch(`/api/favorites`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -69,98 +69,46 @@ export default function Book(props) {
     });
 
     if (response.ok) {
+      setIsFavorite(false);
       router.replace(router.asPath);
     }
+  };
+
+  if (!book) {
+    return <p>Loading...</p>;
   }
 
   return (
     <>
       <Head>
-        <title>Booker Book</title>
-        <meta name="description" content="Viewing a book on booker" />
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>" />
-        {/* <link rel="icon" href="/favicon.ico" /> */}
+        <title>{book.title}</title>
       </Head>
       <Header isLoggedIn={isLoggedIn} />
-      {
-        book &&
-        <main>
-          <BookInfo isFavorite={isFavoriteBook} {...book}/>
+      <main>
+        <div className={styles.bookDetails}>
+          <h1>{book.title} {isFavorite && <sup>⭐</sup>}</h1>
+          {book.authors && <h2>By: {book.authors.join(', ')}</h2>}
+          <img src={book.thumbnail || 'https://via.placeholder.com/128x190?text=NO COVER'} alt={book.title} />
+          <p>{book.description}</p>
+          <p>Pages: {book.pageCount}</p>
           <div className={styles.controls}>
-            {
-              !isLoggedIn
-              ? <>
-                  <p>Want to add this book to your favorites?</p>
-                  <Link href="/login" className="button">Login</Link>
-                </>
-              : isFavoriteBook
-              ? <button onClick={removeFromFavorites}>
-                  Remove from Favorites
-                </button>
-              : <button onClick={addToFavorites}>
-                  Add to Favorites
-                </button>
-            }
-
-            <a href="#" onClick={() => router.back()}>
-              Return
-            </a>
+            {isLoggedIn ? (
+              isFavorite ? (
+                <button onClick={handleRemoveFromBookshelf}>Remove from bookshelf</button>
+              ) : (
+                <button onClick={handleAddToBookshelf}>Add to bookshelf</button>
+              )
+            ) : (
+              <>
+                <p>XXX</p>
+                <Link href="/login"><a className="button">Login</a></Link>
+              </>
+            )}
+            <button onClick={() => router.back()}>Back</button>
           </div>
-        </main>
-      }
-    </>
-  )
-}
-
-function BookInfo({
-  title,
-  authors,
-  thumbnail,
-  description,
-  isFavorite,
-  pageCount,
-  categories,
-  previewLink
-}) {
-  return (
-    <>
-      <div className={styles.titleGroup}>
-        <div>
-          <h1>{title}{isFavorite && <sup>⭐</sup>}</h1>
-          {
-            authors && authors.length > 0 &&
-            <h2>By: {authors.join(", ").replace(/, ([^,]*)$/, ', and $1')}</h2>
-          }
-          {
-            categories && categories.length > 0 &&
-            <h3>Category: {categories.join(", ").replace(/, ([^,]*)$/, ', and $1')}</h3>
-          }
         </div>
-        <a target="_BLANK"
-          href={previewLink}
-          className={styles.imgContainer}
-          rel="noreferrer">
-          <img src={thumbnail
-            ? thumbnail
-            : "https://via.placeholder.com/128x190?text=NO COVER"} alt={title} />
-          <span>Look Inside!</span>
-        </a>
-      </div>
-      <p>Description:<br/>{description}</p>
-      <p>Pages: {pageCount}</p>
-      <div className={styles.links}>
-        <span>Order online:</span>
-        <a target="_BLANK"
-          href={`https://www.amazon.com/s?k=${title} ${authors ? authors[0] : ""}`}
-          rel="noreferrer">
-          Amazon
-        </a>
-        <a target="_BLANK"
-          href={`https://www.barnesandnoble.com/s/${title} ${authors ? authors[0] : ""}`}
-          rel="noreferrer">
-          Barnes & Noble
-        </a>
-      </div>
+      </main>
+      <Footer />
     </>
-  )
+  );
 }
