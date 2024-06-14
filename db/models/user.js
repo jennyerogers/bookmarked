@@ -1,5 +1,6 @@
 import { Schema, model, models } from 'mongoose'
 import bcrypt from 'bcrypt'
+import bookSchema from './book'
 
 const UserSchema = new Schema({
   username: {
@@ -13,8 +14,10 @@ const UserSchema = new Schema({
     minLength: 5,
     maxLength: 200
   },
+  bookShelf: [bookSchema]
 })
-//add and import schema
+
+
 UserSchema.pre('save', async function(next) {
   if (this.isNew)
     this.password = await bcrypt.hash(this.password, 10)

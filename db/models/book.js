@@ -1,19 +1,11 @@
-import { Schema } from "mongoose"
+import { Schema } from 'mongoose'
 
 const bookSchema = new Schema({
-    title: {
-      type: String,
-      required: true,
-    },
-    authors: {
-      type: [String], 
-      required: true,
-    },
-    thumbnail: {
-      type: String,
-    },
-  });
-  
-  const Book = mongoose.model('Book', bookSchema);
-  
-  export default bookSchema;
+  googleId: String,
+  title: String,
+  authors: [String],
+  thumbnail: String,
+  previewLink: String,
+})
+
+export default bookSchema

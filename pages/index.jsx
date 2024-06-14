@@ -5,7 +5,7 @@ import Footer from "../components/footer";
 import { useRouter } from "next/router";
 import { withIronSessionSsr } from "iron-session/next";
 import sessionOptions from "../config/session";
-//import styles from "../styles/Home.module.css";
+import styles from "../styles/Home.module.css";
 
 
 
@@ -37,7 +37,7 @@ export default function Home(props) {
       <Header isLoggedIn={props.isLoggedIn} username={props?.user?.username} />
 
       <main >
-        <h1 >
+        <h1 className={styles.title}>
           Welcome to Bookmarked!
         </h1>
 

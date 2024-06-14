@@ -1,6 +1,6 @@
 import styles from "../styles/Search.module.css";
 import Header from "../components/Header";
-
+import Footer from "../components/Footer";
 import { useState } from "react";
 import Link from "next/link";
 import { withIronSessionSsr } from "iron-session/next";
@@ -32,10 +32,9 @@ export default function Search(props) {
     setSearchPerformed(true);
     try {
       const res = await fetch(
-        `https://www.googleapis.com/books/v1/volumes?q=${query}&key=${process.env.NEXT_PUBLIC_API_KEY}`
+        `https://www.googleapis.com/books/v1/volumes?q=${query}`
       );
       const bookData = await res.json();
-      console.log(bookData);
       if (bookData.totalItems > 0) {
         setBookInfo(bookData.items);
         setQuery("");
@@ -53,11 +52,11 @@ export default function Search(props) {
       <main>
         <Header isLoggedIn={props.isLoggedIn} />
         <div className={styles.main}>
-          <h1>Search</h1>
+          <h1>Book Search</h1>
           <div>
             <form onSubmit={handleSubmit}>
               <input
-                placeholder="Search by keyword"
+                placeholder="Search by author, title, and/or keywords"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 type="text"
@@ -69,35 +68,29 @@ export default function Search(props) {
             </form>
           </div>
           <div>
-            {!searchPerformed && (
-              <p>Search by keyword and view the first 10 book results.</p>
-            )}
+
             {searchPerformed && bookInfo && bookInfo.length === 0 && (
               <p>No books found.</p>
             )}
             {bookInfo && bookInfo.length > 0 && (
-              bookInfo.map((book) => {
-                const volumeInfo = book.volumeInfo;
-                return (
-                  <div key={book.id}>
-                    <h3>{volumeInfo.title}</h3>
-                    <p>{volumeInfo.authors ? volumeInfo.authors.join(", ") : "Unknown Author"}</p>
-                    {volumeInfo.imageLinks && volumeInfo.imageLinks.thumbnail ? (
-                      <Link href={`/book/${book.id}`}>
-                        <img src={volumeInfo.imageLinks.thumbnail} alt="Book Thumbnail" />
-                      </Link>
-                    ) : (
-                      <p>Thumbnail unavailable.</p>
-                    )}
-                  </div>
-                );
-              })
+              bookInfo.map((book) => (
+                <div key={book.id}>
+                  <h3>{book.volumeInfo.title}</h3>
+                  <p>{book.volumeInfo.authors?.join(", ")}</p>
+                  {book.volumeInfo.imageLinks?.thumbnail ? (
+                    <Link href={`/book/${book.id}`}>
+                      <img src={book.volumeInfo.imageLinks.thumbnail} alt="Book Cover" />
+                    </Link>
+                  ) : (
+                    <p>Cover unavailable.</p>
+                  )}
+                </div>
+              ))
             )}
           </div>
         </div>
-
+        <Footer />
       </main>
     </>
   );
 }
-//change this later

@@ -1,0 +1,21 @@
+.container {
+    padding: 20px;
+  }
+  .favoritesList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .bookItem {
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    width: 150px;
+  }
+  .bookItem img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+  }
+  

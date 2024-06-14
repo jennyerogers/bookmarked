@@ -1,5 +1,14 @@
-.container {
+.header {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
-  gap: 12px;
+  padding-top: 12px;
+  margin-bottom: 40px;
+  align-items: center;
+  font-family: 'Times New Roman', Times, serif
+}
+
+.header .links a {
+  margin: 0 10px;
+  cursor: pointer;
 }
