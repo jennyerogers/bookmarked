@@ -12,10 +12,10 @@ export default withIronSessionApiRoute(
       case 'POST':
         try {
           const book = JSON.parse(req.body);
-          const addedBook = await db.favorites.addToBookshelf(req.session.user.id, book);
+          const addedBook = await db.favorites.addToFavoriteBooks(req.session.user.id, book);
           if (!addedBook) {
             req.session.destroy();
-            return res.status(401);
+            return res.status(401).json({ error: "Failed to add book to your bookshelf." });
           }
           return res.status(200).json({ book: addedBook, message: "Book was added to your bookshelf!" });
         } catch (error) {
@@ -24,14 +24,14 @@ export default withIronSessionApiRoute(
 
       case 'DELETE':
         try {
-          const book = JSON.parse(req.body);
-          const deletedBook = await db.favorites.removeFromBookshelf(req.session.user.id, book.id);
+          const { id } = JSON.parse(req.body);
+          const deletedBook = await db.favorites.removeFavoriteBook(req.session.user.id, id);
 
           if (!deletedBook) {
             req.session.destroy();
-            return res.status(401);
+            return res.status(401).json({ error: "Failed to remove book from your bookshelf." });
           }
-          return res.status(200).json({ book: deletedBook, message: "Book was removed from your bookshelf." });
+          return res.status(200).json({ bookId: id, message: "Book was removed from your bookshelf." });
 
         } catch (error) {
           return res.status(400).json({ error: error.message });
