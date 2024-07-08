@@ -11,8 +11,8 @@ export default withIronSessionApiRoute(
     switch (req.method) {
       case 'POST':
         try {
-          const book = JSON.parse(req.body);
-          const addedBook = await db.favorites.addToFavoriteBooks(req.session.user.id, book);
+          const book = req.body
+          const addedBook = await db.favorites.addToFavoriteBooks(req.session.user._id, book);
           if (!addedBook) {
             req.session.destroy();
             return res.status(401).json({ error: "Failed to add book to your bookshelf." });
@@ -24,8 +24,8 @@ export default withIronSessionApiRoute(
 
       case 'DELETE':
         try {
-          const { id } = JSON.parse(req.body);
-          const deletedBook = await db.favorites.removeFavoriteBook(req.session.user.id, id);
+          const { id } = req.body
+          const deletedBook = await db.favorites.removeFavoriteBook(req.session.user._id, id);
 
           if (!deletedBook) {
             req.session.destroy();
