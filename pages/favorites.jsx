@@ -9,9 +9,9 @@ import styles from "../styles/Favorites.module.css";
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
     const user = req.session.user;
-    const favorites = await db.favorites.getFavoriteBooks(user.id)
+    const favorites = await db.favorites.getFavoriteBooks(user._id)
     console.log("user faves", favorites)
-    
+
     const props = {};
     if (user) {
       
@@ -39,13 +39,13 @@ export default function Favorites(props) {
           <h1>Favorites</h1>
           {props.bookShelf && props.bookShelf.length > 0 ? (
             <div className={styles.favoritesList}>
-              {bookShelf.map(book => (
+              {props.bookShelf.map(book => (
                 <div key={book.id} className={styles.bookItem}>
                   <h2>{book.title}</h2>
                   {book.authors && (
                     <p>By: {book.authors.join(', ').replace(/, ([^,]*)$/, ', and $1')}</p>
                   )}
-                  <Link href={`/book/${book.id}`}>
+                  <Link href={`/book/${book.googleId}`}>
                     <img src={book.thumbnail || 'https://via.placeholder.com/128x190?text=NO COVER'} alt="Book cover" />
                   </Link>
                 </div>
