@@ -1,51 +1,57 @@
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import Link from 'next/link';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
+import { useEffect, useState } from 'react';
 import { withIronSessionSsr } from 'iron-session/next';
 import sessionOptions from '../../config/session';
-import * as favoritesController from '../../db/controllers/favorites';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
+import db from '../../db';
 import styles from '../../styles/Book.module.css';
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req, params }) {
-    const { user } = req.session;
+    const user = req.session.user;
+    const bookId = params.id;
     const props = {};
 
     if (user) {
-      const book = await favoritesController.getByGoogleId(user.id, params.id);
-      props.user = user;
-      props.book = book || null;
+      props.user = req.session.user;
+
+      const book = await db.favorites.getFavoriteBooks(bookId); 
+      if (book) {
+        props.book = book;
+        props.isFavoriteBook = user.bookShelf.some(b => b.id === bookId);
+      } else {
+        return {
+          notFound: true, 
+        };
+      }
     }
 
     props.isLoggedIn = !!user;
-    return { props };
+    return {
+      props,
+    };
   },
   sessionOptions
 );
 
-export default function Book({ user, isLoggedIn, book: serverBook }) {
+export default function BookInfo(props) {
   const router = useRouter();
-  const { id: bookId } = router.query;
-  const [book, setBook] = useState(serverBook);
-  const [isFavorite, setIsFavorite] = useState(!!serverBook);
+  const { id } = router.query;
+  const [book, setBook] = useState(props.book);
+  const { isLoggedIn, isFavoriteBook } = props;
 
   useEffect(() => {
-    if (!serverBook) {
-      fetchBookDetails();
+    if (!book) {
+      router.push('/'); 
     }
-  }, [serverBook]);
+  }, [book, router]);
 
-  const fetchBookDetails = async () => {
-    const response = await fetch(`/api/googlebooks/${bookId}`);
-    const data = await response.json();
-    setBook(data);
-  };
-
-  const handleAddToBookshelf = async () => {
-    const response = await fetch(`/api/favorites`, {
+  async function addToFavoriteBooks(e) {
+    e.preventDefault();
+    const res = await fetch('/api/favorites', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -53,62 +59,115 @@ export default function Book({ user, isLoggedIn, book: serverBook }) {
       body: JSON.stringify(book),
     });
 
-    if (response.ok) {
-      setIsFavorite(true);
+    if (res.status === 200) {
       router.replace(router.asPath);
     }
-  };
+  }
 
-  const handleRemoveFromBookshelf = async () => {
-    const response = await fetch(`/api/favorites`, {
+  async function removeFromFavorites(e) {
+    e.preventDefault();
+    const res = await fetch('/api/favorites', {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ id: bookId }),
+      body: JSON.stringify({ id }),
     });
 
-    if (response.ok) {
-      setIsFavorite(false);
+    if (res.status === 200) {
       router.replace(router.asPath);
     }
-  };
+  }
 
   if (!book) {
-    return <p>Loading...</p>;
+    return <div>Loading...</div>; 
   }
+
+  const {
+    title,
+    authors,
+    thumbnail,
+    description,
+    pageCount,
+    categories,
+    previewLink,
+  } = book;
 
   return (
     <>
       <Head>
-        <title>{book.title}</title>
+        <title>{title} - Bookmarked</title>
+        <meta name="description" content="Viewing a book on Bookmarked" />
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>" />
       </Head>
       <Header isLoggedIn={isLoggedIn} />
       <main>
-        <div className={styles.bookDetails}>
-          <h1>{book.title} {isFavorite && <sup>⭐</sup>}</h1>
-          {book.authors && <h2>By: {book.authors.join(', ')}</h2>}
-          <img src={book.thumbnail || 'https://via.placeholder.com/128x190?text=NO COVER'} alt={book.title} />
-          <p>{book.description}</p>
-          <p>Pages: {book.pageCount}</p>
-          <div className={styles.controls}>
-            {isLoggedIn ? (
-              isFavorite ? (
-                <button onClick={handleRemoveFromBookshelf}>Remove from bookshelf</button>
-              ) : (
-                <button onClick={handleAddToBookshelf}>Add to bookshelf</button>
-              )
-            ) : (
-              <>
-                <p>XXX</p>
-                <Link href="/login"><a className="button">Login</a></Link>
-              </>
+        <div className={styles.titleGroup}>
+          <div>
+            <h1>
+              {title}
+              {isFavoriteBook && <sup>⭐</sup>}
+            </h1>
+            {authors && authors.length > 0 && (
+              <h2>By: {authors.join(', ').replace(/, ([^,]*)$/, ', and $1')}</h2>
             )}
-            <button onClick={() => router.back()}>Back</button>
+            {categories && categories.length > 0 && (
+              <h3>Category: {categories.join(', ').replace(/, ([^,]*)$/, ', and $1')}</h3>
+            )}
           </div>
+          <a
+            target="_blank"
+            href={previewLink}
+            className={styles.imgContainer}
+            rel="noreferrer"
+          >
+            <img
+              src={thumbnail ? thumbnail : 'https://via.placeholder.com/128x190?text=NO COVER'}
+              alt={title}
+            />
+            <span>Look Inside!</span>
+          </a>
         </div>
+        <p className={styles.description}>Description: {description}</p>
+        <p>Pages: {pageCount}</p>
+        <div className={styles.links}>
+          <span>Order online:</span>
+          <a
+            target="_blank"
+            href={`https://www.amazon.com/s?k=${encodeURIComponent(title)} ${
+              authors ? encodeURIComponent(authors[0]) : ''
+            }`}
+            rel="noreferrer"
+          >
+            Amazon
+          </a>
+          <a
+            target="_blank"
+            href={`https://www.barnesandnoble.com/s/${encodeURIComponent(title)} ${
+              authors ? encodeURIComponent(authors[0]) : ''
+            }`}
+            rel="noreferrer"
+          >
+            Barnes & Noble
+          </a>
+        </div>
+        {isLoggedIn && (
+          <div className={styles.controls}>
+            {isFavoriteBook ? (
+              <button onClick={removeFromFavorites}>
+                Remove from Favorites
+              </button>
+            ) : (
+              <button onClick={addToFavoriteBooks}>
+                Add to Favorites
+              </button>
+            )}
+          </div>
+        )}
+        <Link href="/search">
+          <a className={styles.returnLink}>Return to Search</a>
+        </Link>
       </main>
-      <Footer />
     </>
   );
 }

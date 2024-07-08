@@ -2,7 +2,7 @@ import styles from "../styles/Search.module.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useState } from "react";
-import Link from "next/link";
+import Link from "next/link"; // Import Link from Next.js
 import { withIronSessionSsr } from "iron-session/next";
 import sessionOptions from "../config/session";
 
@@ -10,6 +10,7 @@ export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
     const user = req.session.user;
     const props = {};
+
     if (user) {
       props.user = req.session.user;
       props.isLoggedIn = true;
@@ -52,7 +53,7 @@ export default function Search(props) {
       <main>
         <Header isLoggedIn={props.isLoggedIn} />
         <div className={styles.main}>
-          <h1>Book Search</h1>
+          <h1>Bookmarked Search</h1>
           <div>
             <form onSubmit={handleSubmit}>
               <input
@@ -68,25 +69,29 @@ export default function Search(props) {
             </form>
           </div>
           <div>
-
-            {searchPerformed && bookInfo && bookInfo.length === 0 && (
-              <p>No books found.</p>
-            )}
-            {bookInfo && bookInfo.length > 0 && (
+            {searchPerformed &&
+              bookInfo &&
+              bookInfo.length === 0 && <p>No books found.</p>}
+            {bookInfo &&
+              bookInfo.length > 0 &&
               bookInfo.map((book) => (
                 <div key={book.id}>
                   <h3>{book.volumeInfo.title}</h3>
                   <p>{book.volumeInfo.authors?.join(", ")}</p>
                   {book.volumeInfo.imageLinks?.thumbnail ? (
                     <Link href={`/book/${book.id}`}>
-                      <img src={book.volumeInfo.imageLinks.thumbnail} alt="Book Cover" />
+                  
+                        <img
+                          src={book.volumeInfo.imageLinks.thumbnail}
+                          alt="Book Cover"
+                        />
+                     
                     </Link>
                   ) : (
                     <p>Cover unavailable.</p>
                   )}
                 </div>
-              ))
-            )}
+              ))}
           </div>
         </div>
         <Footer />
