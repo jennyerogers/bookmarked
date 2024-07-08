@@ -6,7 +6,6 @@ import { withIronSessionSsr } from 'iron-session/next';
 import sessionOptions from '../../config/session';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import db from '../../db';
 import styles from '../../styles/Book.module.css';
 
 export const getServerSideProps = withIronSessionSsr(
@@ -18,13 +17,15 @@ export const getServerSideProps = withIronSessionSsr(
     if (user) {
       props.user = req.session.user;
 
-      const book = await db.favorites.getFavoriteBooks(bookId); 
-      if (book) {
-        props.book = book;
-        props.isFavoriteBook = user.bookShelf.some(b => b.id === bookId);
+      const response = await fetch(`https://www.googleapis.com/books/v1/volumes/${bookId}`);
+      const bookData = await response.json();
+
+      if (bookData && bookData.volumeInfo) {
+        props.book = bookData.volumeInfo;
+        props.isFavoriteBook = Array.isArray(user.bookShelf) && user.bookShelf.some(b => b.googleId === bookId);
       } else {
         return {
-          notFound: true, 
+          notFound: true,
         };
       }
     }
@@ -45,7 +46,7 @@ export default function BookInfo(props) {
 
   useEffect(() => {
     if (!book) {
-      router.push('/'); 
+      router.push('/');
     }
   }, [book, router]);
 
@@ -80,13 +81,13 @@ export default function BookInfo(props) {
   }
 
   if (!book) {
-    return <div>Loading...</div>; 
+    return <div>Loading...</div>;
   }
 
   const {
     title,
     authors,
-    thumbnail,
+    imageLinks,
     description,
     pageCount,
     categories,
@@ -98,7 +99,7 @@ export default function BookInfo(props) {
       <Head>
         <title>{title} - Bookmarked</title>
         <meta name="description" content="Viewing a book on Bookmarked" />
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>" />
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔎</text></svg>" />
       </Head>
       <Header isLoggedIn={isLoggedIn} />
       <main>
@@ -122,7 +123,7 @@ export default function BookInfo(props) {
             rel="noreferrer"
           >
             <img
-              src={thumbnail ? thumbnail : 'https://via.placeholder.com/128x190?text=NO COVER'}
+              src={imageLinks?.thumbnail ? imageLinks.thumbnail : 'https://via.placeholder.com/128x190?text=NO COVER'}
               alt={title}
             />
             <span>Look Inside!</span>
@@ -164,9 +165,10 @@ export default function BookInfo(props) {
             )}
           </div>
         )}
-        <Link href="/search">
-          <a className={styles.returnLink}>Return to Search</a>
+        <Link href="/search" className={styles.returnLink}>
+          Return to Search
         </Link>
+        <Footer />
       </main>
     </>
   );

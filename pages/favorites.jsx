@@ -10,7 +10,8 @@ export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
     const user = req.session.user;
     const favorites = await db.favorites.getFavoriteBooks(user.id)
-
+    console.log("user faves", favorites)
+    
     const props = {};
     if (user) {
       
@@ -36,7 +37,7 @@ export default function Favorites(props) {
         <Header isLoggedIn={props.isLoggedIn} />
         <div className={styles.container}>
           <h1>Favorites</h1>
-          {bookShelf && bookShelf.length > 0 ? (
+          {props.bookShelf && props.bookShelf.length > 0 ? (
             <div className={styles.favoritesList}>
               {bookShelf.map(book => (
                 <div key={book.id} className={styles.bookItem}>
