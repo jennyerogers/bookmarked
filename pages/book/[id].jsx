@@ -21,7 +21,16 @@ export const getServerSideProps = withIronSessionSsr(
       const bookData = await response.json();
 
       if (bookData && bookData.volumeInfo) {
-        props.book = bookData.volumeInfo;
+        props.book = {
+          googleId: bookId,
+          title: bookData.volumeInfo.title,
+          authors: bookData.volumeInfo.authors,
+          thumbnail: bookData.volumeInfo.imageLinks?.thumbnail || 'https://via.placeholder.com/128x190?text=NO COVER',
+          description: bookData.volumeInfo.description,
+          pageCount: bookData.volumeInfo.pageCount,
+          categories: bookData.volumeInfo.categories,
+          previewLink: bookData.volumeInfo.previewLink,
+        };
         props.isFavoriteBook = Array.isArray(user.bookShelf) && user.bookShelf.some(b => b.googleId === bookId);
       } else {
         return {
@@ -38,7 +47,12 @@ export const getServerSideProps = withIronSessionSsr(
   sessionOptions
 );
 
-export default function BookInfo(props) {
+const stripHtmlTags = (str) => {
+  if (!str) return '';
+  return str.replace(/<\/?[^>]+(>|$)/g, '');
+};
+
+const BookInfo = (props) => {
   const router = useRouter();
   const { id } = router.query;
   const [book, setBook] = useState(props.book);
@@ -72,7 +86,7 @@ export default function BookInfo(props) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ id }),
+      body: JSON.stringify({ id: book.googleId }),
     });
 
     if (res.status === 200) {
@@ -87,12 +101,14 @@ export default function BookInfo(props) {
   const {
     title,
     authors,
-    imageLinks,
+    thumbnail,
     description,
     pageCount,
     categories,
     previewLink,
   } = book;
+
+  const cleanDescription = stripHtmlTags(description);
 
   return (
     <>
@@ -123,13 +139,13 @@ export default function BookInfo(props) {
             rel="noreferrer"
           >
             <img
-              src={imageLinks?.thumbnail ? imageLinks.thumbnail : 'https://via.placeholder.com/128x190?text=NO COVER'}
+              src={thumbnail}
               alt={title}
             />
             <span>Look Inside!</span>
           </a>
         </div>
-        <p className={styles.description}>Description: {description}</p>
+        <p className={styles.description}>Description: {cleanDescription}</p>
         <p>Pages: {pageCount}</p>
         <div className={styles.links}>
           <span>Order online:</span>
@@ -156,11 +172,11 @@ export default function BookInfo(props) {
           <div className={styles.controls}>
             {isFavoriteBook ? (
               <button onClick={removeFromFavorites}>
-                Remove from Favorites
+                Remove from Bookshelf
               </button>
             ) : (
               <button onClick={addToFavoriteBooks}>
-                Add to Favorites
+                Add to Bookshelf
               </button>
             )}
           </div>
@@ -172,4 +188,6 @@ export default function BookInfo(props) {
       </main>
     </>
   );
-}
+};
+
+export default BookInfo;

@@ -13,8 +13,7 @@ export const getServerSideProps = withIronSessionSsr(
     console.log("user faves", favorites)
 
     const props = {};
-    if (user) {
-      
+    if (user) { 
       props.isLoggedIn = true;
     } else {
       props.isLoggedIn = false;
@@ -36,11 +35,11 @@ export default function Favorites(props) {
       <main>
         <Header isLoggedIn={props.isLoggedIn} />
         <div className={styles.container}>
-          <h1>Favorites</h1>
+          <h1>Your Bookshelf</h1>
           {props.bookShelf && props.bookShelf.length > 0 ? (
             <div className={styles.favoritesList}>
               {props.bookShelf.map(book => (
-                <div key={book.id} className={styles.bookItem}>
+                <div key={book.googleId} className={styles.bookItem}>
                   <h2>{book.title}</h2>
                   {book.authors && (
                     <p>By: {book.authors.join(', ').replace(/, ([^,]*)$/, ', and $1')}</p>
