@@ -15,7 +15,7 @@ export const getServerSideProps = withIronSessionSsr(
     const props = {};
 
     if (user) {
-      props.user = req.session.user;
+      props.user = user;
 
       const response = await fetch(`https://www.googleapis.com/books/v1/volumes/${bookId}`);
       const bookData = await response.json();
@@ -28,10 +28,12 @@ export const getServerSideProps = withIronSessionSsr(
           thumbnail: bookData.volumeInfo.imageLinks?.thumbnail || 'https://via.placeholder.com/128x190?text=NO COVER',
           description: bookData.volumeInfo.description,
           pageCount: bookData.volumeInfo.pageCount,
-          categories: bookData.volumeInfo.categories,
+          categories: bookData.volumeInfo.categories || [], // Set categories to empty array if undefined
           previewLink: bookData.volumeInfo.previewLink,
         };
-        props.isFavoriteBook = Array.isArray(user.bookShelf) && user.bookShelf.some(b => b.googleId === bookId);
+
+        const bookShelf = user.bookShelf || [];
+        props.isFavoriteBook = bookShelf.some(b => b.googleId === bookId);
       } else {
         return {
           notFound: true,
@@ -56,7 +58,8 @@ const BookInfo = (props) => {
   const router = useRouter();
   const { id } = router.query;
   const [book, setBook] = useState(props.book);
-  const { isLoggedIn, isFavoriteBook } = props;
+  const [isFavoriteBook, setIsFavoriteBook] = useState(props.isFavoriteBook);
+  const { isLoggedIn } = props;
 
   useEffect(() => {
     if (!book) {
@@ -75,6 +78,7 @@ const BookInfo = (props) => {
     });
 
     if (res.status === 200) {
+      setIsFavoriteBook(true);
       router.replace(router.asPath);
     }
   }
@@ -90,6 +94,7 @@ const BookInfo = (props) => {
     });
 
     if (res.status === 200) {
+      setIsFavoriteBook(false);
       router.replace(router.asPath);
     }
   }

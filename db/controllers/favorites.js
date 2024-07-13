@@ -28,10 +28,9 @@ export async function removeFavoriteBook(userId, bookId) {
   await dbConnect();
   const user = await User.findByIdAndUpdate(
     userId,
-    { $pull: { bookShelf: { id: bookId } } },
+    { $pull: { bookShelf: { googleId: bookId } } },
     { new: true }
   );
   if (!user) return null;
   return true;
 }
-//this is good i think
