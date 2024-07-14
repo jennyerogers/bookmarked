@@ -1,4 +1,4 @@
-import styles from "../styles/Search.module.css";
+import styles from "../styles/search.module.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useState } from "react";

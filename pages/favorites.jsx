@@ -5,7 +5,7 @@ import sessionOptions from "../config/session";
 import db from "../db";
 import Link from "next/link";
 import { useState } from "react";
-import styles from "../styles/Favorites.module.css";
+import styles from "../styles/favorites.module.css";
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {

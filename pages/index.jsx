@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 import Header from "../components/Header";
-import Footer from "../components/footer";
+import Footer from "../components/Footer";
 import { useRouter } from "next/router";
 import { withIronSessionSsr } from "iron-session/next";
 import sessionOptions from "../config/session";
