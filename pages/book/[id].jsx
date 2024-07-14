@@ -6,7 +6,7 @@ import { withIronSessionSsr } from 'iron-session/next';
 import sessionOptions from '../../config/session';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import styles from '../../styles/Book.module.css';
+import styles from '../../styles/book.module.css';
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req, params }) {
