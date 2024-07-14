@@ -46,7 +46,7 @@ export default function Favorites({ user, isLoggedIn, initialFavorites }) {
         <div className={styles.container}>
           <h1>Your Bookshelf</h1>
           {bookShelf && bookShelf.length > 0 ? (
-            <div className={styles.favoritesList}>
+            <div>
               {bookShelf.map(book => (
                 <div key={book.googleId} className={styles.bookItem}>
                   <h2>{book.title}</h2>
