@@ -84,7 +84,7 @@ export default function Login(props) {
             onChange={handleChange}
             value={password}
           />
-          <button>Login</button>
+          <button>Let's go →</button>
           {error && <p>{error}</p>}
         </form>
         <Link href="/signup">

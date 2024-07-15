@@ -2,12 +2,9 @@ import Head from "next/head";
 import Link from "next/link";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { useRouter } from "next/router";
 import { withIronSessionSsr } from "iron-session/next";
 import sessionOptions from "../config/session";
 import styles from "../styles/Home.module.css";
-
-
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
@@ -25,8 +22,7 @@ export const getServerSideProps = withIronSessionSsr(
 );
 
 export default function Home(props) {
- 
-  return ( //fix later
+  return (
     <div>
       <Head>
         <title>Bookmarked</title>
@@ -36,14 +32,18 @@ export default function Home(props) {
 
       <Header isLoggedIn={props.isLoggedIn} username={props?.user?.username} />
 
-      <main >
+      <main className={styles.main}>
         <h1 className={styles.title}>
-          Welcome to Bookmarked!
+          Reading made simple.
         </h1>
-
+        {!props.isLoggedIn && (
+          <Link href="/login">
+            <button className={styles.getStartedButton}>Get Started →</button>
+          </Link>
+        )}
       </main>
 
-      <Footer/>
+      <Footer />
     </div>
-    )
+  );
 }

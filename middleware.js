@@ -8,14 +8,13 @@ export async function middleware(req) {
 
   const { user } = session;
 
-  if (!user) {
-    return NextResponse.redirect(new URL('/login', req.url))
+  if (!user && !req.nextUrl.pathname.startsWith('/login')) {
+    return NextResponse.redirect(new URL('/login', req.url));
   }
 
   return res;
 }
 
 export const config = {
-  matcher: ["/"]
-} 
-//good
+  matcher: ["/favorites", "/search", "/book/:id*"] 
+}
