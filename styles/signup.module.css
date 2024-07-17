@@ -1,0 +1,85 @@
+.main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .title {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  .formContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 400px;
+    margin: 0 auto 20px auto;
+  }
+  
+  .label {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .inputField {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+  }
+  
+  .button {
+    padding: 12px 24px;
+    font-size: 1rem;
+    color: white;
+    background-color: #184d2c;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .button:hover {
+    background-color: #e4efd9;
+    color: black;
+  }
+  
+  .error {
+    color: red;
+    margin-top: 0.5rem;
+  }
+  
+  .link {
+    margin-top: 1rem;
+    text-align: center;
+  }
+  
+  .link a {
+    color: #0070f3;
+    text-decoration: underline;
+  }
+  
+  .link a:hover {
+    color: #005bb5;
+  }
+  
+  .bookList {
+    list-style-type: none;
+    padding: 0;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .bookItem {
+    margin-bottom: 10px;
+  }
+  

@@ -1,3 +1,5 @@
+// pages/index.jsx
+
 import Head from "next/head";
 import Link from "next/link";
 import Header from "../components/Header";
@@ -36,7 +38,11 @@ export default function Home(props) {
         <h1 className={styles.title}>
           Reading made simple.
         </h1>
-        {!props.isLoggedIn && (
+        {props.isLoggedIn ? (
+          <Link href="/search">
+            <button className={styles.getStartedButton}>Start browsing →</button>
+          </Link>
+        ) : (
           <Link href="/login">
             <button className={styles.getStartedButton}>Get Started →</button>
           </Link>

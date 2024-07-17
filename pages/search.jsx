@@ -1,10 +1,10 @@
-import styles from "../styles/search.module.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useState } from "react";
-import Link from "next/link"; // Import Link from Next.js
+import Link from "next/link"; 
 import { withIronSessionSsr } from "iron-session/next";
 import sessionOptions from "../config/session";
+import styles from "../styles/search.module.css";
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
@@ -51,51 +51,50 @@ export default function Search(props) {
   return (
     <>
       <main>
-        <Header isLoggedIn={props.isLoggedIn} />
-        <div className={styles.main}>
-          <h1>Bookmarked Search</h1>
-          <div>
-            <form onSubmit={handleSubmit}>
-              <input
-                placeholder="Search by author, title, and/or keywords"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                type="text"
-                name="book-search"
-              />
-              <br />
-              <br />
-              <button type="submit">Submit</button>
-            </form>
+  <Header isLoggedIn={props.isLoggedIn} />
+  <div className={styles.main}>
+    <h1 className={styles.title}>Search from thousands of books</h1>
+    <div>
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <input
+          placeholder="Search by author, title, and/or keywords"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          type="text"
+          name="book-search"
+          className={styles.input} 
+        />
+        <br />
+        <br />
+        <button type="submit" className={styles.button}>Submit</button>
+      </form>
+    </div>
+    <div>
+      {searchPerformed &&
+        bookInfo &&
+        bookInfo.length === 0 && <p>No books found.</p>}
+      {bookInfo &&
+        bookInfo.length > 0 &&
+        bookInfo.map((book) => (
+          <div key={book.id} className={styles.bookItem}>
+            <h3>{book.volumeInfo.title}</h3>
+            <p>{book.volumeInfo.authors?.join(", ")}</p>
+            {book.volumeInfo.imageLinks?.thumbnail ? (
+              <Link href={`/book/${book.id}`}>
+                <img
+                  src={book.volumeInfo.imageLinks.thumbnail}
+                  alt="Book Cover"
+                />
+              </Link>
+            ) : (
+              <p>Cover unavailable.</p>
+            )}
           </div>
-          <div>
-            {searchPerformed &&
-              bookInfo &&
-              bookInfo.length === 0 && <p>No books found.</p>}
-            {bookInfo &&
-              bookInfo.length > 0 &&
-              bookInfo.map((book) => (
-                <div key={book.id}>
-                  <h3>{book.volumeInfo.title}</h3>
-                  <p>{book.volumeInfo.authors?.join(", ")}</p>
-                  {book.volumeInfo.imageLinks?.thumbnail ? (
-                    <Link href={`/book/${book.id}`}>
-                  
-                        <img
-                          src={book.volumeInfo.imageLinks.thumbnail}
-                          alt="Book Cover"
-                        />
-                     
-                    </Link>
-                  ) : (
-                    <p>Cover unavailable.</p>
-                  )}
-                </div>
-              ))}
-          </div>
-        </div>
-        <Footer />
-      </main>
+        ))}
+    </div>
+  </div>
+  <Footer />
+</main>
     </>
   );
 }

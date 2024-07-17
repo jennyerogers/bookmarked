@@ -66,10 +66,9 @@
   }
 
   .getStartedButton {
-    margin-top: 10px; /* Adjust for smaller screens */
+    margin-top: 10px; 
   }
 
-  /* Additional styles for mobile view */
   .description {
     font-size: 0.8rem;
   }
