@@ -4,7 +4,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useState } from "react";
 import { useRouter } from "next/router";
-import styles from "../styles/signup.module.css";  // Import the CSS module
+import styles from "../styles/signup.module.css";  
 
 export default function Signup(props) {
   const router = useRouter();
