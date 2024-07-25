@@ -66,6 +66,11 @@
   margin: 20px 0;
 }
 
+.descriptionAlign {
+  display: flex;
+  justify-content: center;
+}
+
 .links {
   display: flex;
   align-items: center;
@@ -103,7 +108,6 @@
   cursor: pointer;
   transition: background-color 0.3s;
   font-family: 'Georgia', serif;
-
 }
 
 .addToBookshelfButton:hover {
@@ -133,8 +137,14 @@
     margin-top: 20px;
   }
 
-  .description {
+  .descriptionWrapper {
     text-align: center;
+  }
+
+  .description {
+    text-align: left;
+    max-width: 100%;
+    margin: 0 auto;
   }
 
   .links {
