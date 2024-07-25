@@ -1,16 +1,21 @@
 .main {
   padding: 20px;
-  max-width: 800px;
+  padding-bottom: 80px;
+  max-width: 1000px; 
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
+  font-family: 'Georgia', serif;
 }
 
 .title {
   font-size: 2rem;
+  margin-top: 8rem;
   margin-bottom: 2rem;
   text-align: center;
+  font-family: 'Forma', sans-serif;
+  letter-spacing: -0.05em
 }
 
 .form {
@@ -28,6 +33,8 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   margin-bottom: 10px;
+  font-family: 'Georgia', serif;
+
 }
 
 .button {
@@ -39,9 +46,44 @@
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  font-family: 'Georgia', serif;
+
 }
 
 .button:hover {
   background-color: #E4EFD9;
   color: black;
+}
+
+.resultsContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px; 
+  width: 100%;
+}
+
+.bookItem {
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  text-align: center;
+}
+
+.bookItem img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+@media (max-width: 1200px) {
+  .resultsContainer {
+    grid-template-columns: repeat(2, 1fr); 
+  }
+}
+
+@media (max-width: 800px) {
+  .resultsContainer {
+    grid-template-columns: 1fr; 
+  }
 }

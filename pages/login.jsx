@@ -60,8 +60,8 @@ export default function Login(props) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main>
-        <h1 className={styles.title}>Log in</h1>
+      <main className={styles.main}>
+        <h1 className={styles.title}>USER LOGIN</h1>
 
         <form onSubmit={handleLogin} className={styles.formContainer}>
           <label htmlFor="username" className={styles.label}>Username: </label>
@@ -86,8 +86,8 @@ export default function Login(props) {
           {error && <p className={styles.error}>{error}</p>}
         </form>
         <Link href="/signup">
-          <p>Still need to sign up?</p>
-        </Link>
+  <p className={styles.centeredText}>Still need to sign up?</p>
+</Link>
         <Footer/>
       </main>
     </div>

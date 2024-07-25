@@ -1,5 +1,3 @@
-
-
 import Head from "next/head";
 import Link from "next/link";
 import Header from "../components/Header";
@@ -35,9 +33,12 @@ export default function Home(props) {
       <Header isLoggedIn={props.isLoggedIn} username={props?.user?.username} />
 
       <main className={styles.main}>
-        <h1 className={styles.title}>
-          Reading made simple.
+        <h1 className={styles.bookmarkedTitle}>
+          BOOKMARKED
         </h1>
+        <h2 className={styles.title}>
+          Reading made simple.
+        </h2>
         {props.isLoggedIn ? (
           <Link href="/search">
             <button className={styles.getStartedButton}>Start browsing →</button>

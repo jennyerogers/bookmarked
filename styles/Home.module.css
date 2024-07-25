@@ -3,13 +3,14 @@
   flex-direction: column;
   justify-content: center; 
   align-items: center;
-  padding: 6rem;
+  padding: 1rem;
   min-height: 100vh;
 }
 
 .title {
   text-align: center;
-  margin-bottom: 2rem; /* remember that this increases space between title and button */
+  margin-bottom: 1rem; 
+  font-family: 'Georgia', serif;
 }
 
 .description {
@@ -28,6 +29,11 @@
   justify-content: center;
   align-items: center;
   gap: 0.5rem;
+}
+
+.bookmarkedTitle {
+  font-family: 'Forma', sans-serif;
+  letter-spacing: -0.05em
 }
 
 .description p {

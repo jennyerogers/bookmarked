@@ -51,50 +51,46 @@ export default function Search(props) {
   return (
     <>
       <main>
-  <Header isLoggedIn={props.isLoggedIn} />
-  <div className={styles.main}>
-    <h1 className={styles.title}>Search from thousands of books</h1>
-    <div>
-      <form onSubmit={handleSubmit} className={styles.form}>
-        <input
-          placeholder="Search by author, title, and/or keywords"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          type="text"
-          name="book-search"
-          className={styles.input} 
-        />
-        <br />
-        <br />
-        <button type="submit" className={styles.button}>Submit</button>
-      </form>
-    </div>
-    <div>
-      {searchPerformed &&
-        bookInfo &&
-        bookInfo.length === 0 && <p>No books found.</p>}
-      {bookInfo &&
-        bookInfo.length > 0 &&
-        bookInfo.map((book) => (
-          <div key={book.id} className={styles.bookItem}>
-            <h3>{book.volumeInfo.title}</h3>
-            <p>{book.volumeInfo.authors?.join(", ")}</p>
-            {book.volumeInfo.imageLinks?.thumbnail ? (
-              <Link href={`/book/${book.id}`}>
-                <img
-                  src={book.volumeInfo.imageLinks.thumbnail}
-                  alt="Book Cover"
-                />
-              </Link>
-            ) : (
-              <p>Cover unavailable.</p>
-            )}
+        <Header isLoggedIn={props.isLoggedIn} />
+        <div className={styles.main}>
+          <h1 className={styles.title}>Search from thousands of books</h1>
+          <div>
+            <form onSubmit={handleSubmit} className={styles.form}>
+              <input
+                placeholder="Search by author, title, and/or keywords"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                type="text"
+                name="book-search"
+                className={styles.input} 
+              />
+              <br />
+              <br />
+              <button type="submit" className={styles.button}>Submit</button>
+            </form>
           </div>
-        ))}
-    </div>
-  </div>
-  <Footer />
-</main>
+          <div className={styles.resultsContainer}>
+            {searchPerformed && bookInfo.length === 0 && <p>No books found.</p>}
+            {bookInfo.length > 0 && bookInfo.map((book) => (
+              <div key={book.id} className={styles.bookItem}>
+                <h3>{book.volumeInfo.title}</h3>
+                <p>{book.volumeInfo.authors?.join(", ")}</p>
+                {book.volumeInfo.imageLinks?.thumbnail ? (
+                  <Link href={`/book/${book.id}`}>
+                    <img
+                      src={book.volumeInfo.imageLinks.thumbnail}
+                      alt="Book Cover"
+                    />
+                  </Link>
+                ) : (
+                  <p>Cover unavailable.</p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+        <Footer />
+      </main>
     </>
   );
 }
