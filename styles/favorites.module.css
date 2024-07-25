@@ -1,5 +1,6 @@
 .container {
   padding: 20px;
+  margin-bottom: 80px; 
 }
 
 .favoritesList {
@@ -17,11 +18,18 @@
   flex-direction: column; 
   align-items: center; 
   gap: 10px; 
+  background-color: #f6f5f3;
+  font-family: 'Georgia', serif;
+  font-size: 0.8rem;
 }
 
 .bookItem img {
   max-width: 100%;
   height: auto;
+}
+
+.description {
+  text-align: center;
 }
 
 .bookItem button {
@@ -33,12 +41,19 @@
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  margin-bottom: 5px;
+  font-family: 'Georgia', serif;
+}
+
+.bookTitle {
+  font-family: 'Forma', sans-serif;
+  letter-spacing: -0.04em;
 }
 
 .favTitle {
   text-align: center;
   font-family: 'Forma', sans-serif;
-  letter-spacing: -0.05em
+  letter-spacing: -0.05em;
 }
 
 .bookItem button:hover {
@@ -46,7 +61,7 @@
   color: black;
 }
 
-/* Responsive Design */
+/* media queries */
 @media (max-width: 900px) {
   .favoritesList {
     grid-template-columns: repeat(2, 1fr); 
@@ -56,5 +71,20 @@
 @media (max-width: 600px) {
   .favoritesList {
     grid-template-columns: 1fr; 
+  }
+}
+
+@media (max-width: 480px) { 
+  .container {
+    margin-bottom: 60px; 
+  }
+
+  .bookItem {
+    font-size: 0.7rem; 
+  }
+
+  .bookItem button {
+    padding: 6px 12px;
+    font-size: 0.8rem; 
   }
 }

@@ -1,10 +1,10 @@
-import Head from "next/head";
-import Link from "next/link";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import { useState } from "react";
-import { useRouter } from "next/router";
-import styles from "../styles/signup.module.css";  
+import Head from "next/head"
+import Link from "next/link"
+import Header from "../components/Header"
+import Footer from "../components/Footer"
+import { useState } from "react"
+import { useRouter } from "next/router"
+import styles from "../styles/signup.module.css"
 
 export default function Signup(props) {
   const router = useRouter();
@@ -57,44 +57,46 @@ export default function Signup(props) {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>Let's get started.</h1>
+        <div className={styles.textBoxContainer}>
+          <h1 className={styles.title}>Let's get started.</h1>
 
-        <form className={styles.formContainer} onSubmit={handleCreateAccount}>
-          <label className={styles.label} htmlFor="username">Username: </label>
-          <input
-            className={styles.inputField}
-            type="text"
-            name="username"
-            id="username"
-            onChange={handleChange}
-            value={username}
-          />
-          <label className={styles.label} htmlFor="password">Password: </label>
-          <input
-            className={styles.inputField}
-            type="password"
-            name="password"
-            id="password"
-            onChange={handleChange}
-            value={password}
-          />
-          <label className={styles.label} htmlFor="confirm-password">Confirm Password: </label>
-          <input
-            className={styles.inputField}
-            type="password"
-            name="confirm-password"
-            id="confirm-password"
-            onChange={handleChange}
-            value={confirmPassword}
-          />
-          <button className={styles.button}>Let's go</button>
-          {error && <p className={styles.error}>{error}</p>}
-        </form>
-        <Link href="/login">
-          <p className={styles.link}>Login instead?</p>
-        </Link>
+          <form className={styles.formContainer} onSubmit={handleCreateAccount}>
+            <label className={styles.label} htmlFor="username">Username: </label>
+            <input
+              className={styles.inputField}
+              type="text"
+              name="username"
+              id="username"
+              onChange={handleChange}
+              value={username}
+            />
+            <label className={styles.label} htmlFor="password">Password: </label>
+            <input
+              className={styles.inputField}
+              type="password"
+              name="password"
+              id="password"
+              onChange={handleChange}
+              value={password}
+            />
+            <label className={styles.label} htmlFor="confirm-password">Confirm Password: </label>
+            <input
+              className={styles.inputField}
+              type="password"
+              name="confirm-password"
+              id="confirm-password"
+              onChange={handleChange}
+              value={confirmPassword}
+            />
+            <button className={styles.button}>Let's go →</button>
+            {error && <p className={styles.error}>{error}</p>}
+          </form>
+          <Link href="/login">
+            <p className={styles.link}>Login instead?</p>
+          </Link>
+        </div>
+        <Footer />
       </main>
-      <Footer />
     </div>
   );
 }

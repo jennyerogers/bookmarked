@@ -1,11 +1,11 @@
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import { withIronSessionSsr } from "iron-session/next";
-import sessionOptions from "../config/session";
-import db from "../db";
-import Link from "next/link";
-import { useState } from "react";
-import styles from "../styles/favorites.module.css";
+import Header from "../components/Header"
+import Footer from "../components/Footer"
+import { withIronSessionSsr } from "iron-session/next"
+import sessionOptions from "../config/session"
+import db from "../db"
+import Link from "next/link"
+import { useState } from "react"
+import styles from "../styles/favorites.module.css"
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
@@ -49,7 +49,7 @@ export default function Favorites({ user, isLoggedIn, initialFavorites }) {
             <div className={styles.favoritesList}> 
               {bookShelf.map(book => (
                 <div key={book.googleId} className={styles.bookItem}>
-                  <h2>{book.title}</h2>
+                  <h2 className={styles.bookTitle}>{book.title}</h2>
                   {book.authors && (
                     <p>By: {book.authors.join(', ').replace(/, ([^,]*)$/, ', and $1')}</p>
                   )}
@@ -61,7 +61,7 @@ export default function Favorites({ user, isLoggedIn, initialFavorites }) {
               ))}
             </div>
           ) : (
-            <p>Looks like you don't have any books on your shelf yet. Go to the search page to add some!</p>
+            <p className={styles.description}>Looks like you don't have any books on your shelf yet. Go to the search page to add some!</p>
           )}
         </div>
         <Footer/>

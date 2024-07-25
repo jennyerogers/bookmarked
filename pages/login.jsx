@@ -1,12 +1,12 @@
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import Head from 'next/head';
-import Link from "next/link";
-import { useState } from "react";
-import { useRouter } from "next/router";
-import { withIronSessionSsr } from "iron-session/next";
-import sessionOptions from "../config/session";
-import styles from "../styles/login.module.css"; 
+import Header from "../components/Header"
+import Footer from "../components/Footer"
+import Head from 'next/head'
+import Link from "next/link"
+import { useState } from "react"
+import { useRouter } from "next/router"
+import { withIronSessionSsr } from "iron-session/next"
+import sessionOptions from "../config/session"
+import styles from "../styles/login.module.css"
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
@@ -61,33 +61,35 @@ export default function Login(props) {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>USER LOGIN</h1>
+        <div className={styles.textBoxContainer}>
+          <h1 className={styles.title}>User Login</h1>
 
-        <form onSubmit={handleLogin} className={styles.formContainer}>
-          <label htmlFor="username" className={styles.label}>Username: </label>
-          <input
-            type="text"
-            name="username"
-            id="username"
-            onChange={handleChange}
-            value={username}
-            className={styles.inputField}
-          />
-          <label htmlFor="password" className={styles.label}>Password: </label>
-          <input
-            type="password"
-            name="password"
-            id="password"
-            onChange={handleChange}
-            value={password}
-            className={styles.inputField}
-          />
-          <button className={styles.button}>Let's go →</button>
-          {error && <p className={styles.error}>{error}</p>}
-        </form>
-        <Link href="/signup">
-  <p className={styles.centeredText}>Still need to sign up?</p>
-</Link>
+          <form onSubmit={handleLogin} className={styles.formContainer}>
+            <label htmlFor="username" className={styles.label}>Username: </label>
+            <input
+              type="text"
+              name="username"
+              id="username"
+              onChange={handleChange}
+              value={username}
+              className={styles.inputField}
+            />
+            <label htmlFor="password" className={styles.label}>Password: </label>
+            <input
+              type="password"
+              name="password"
+              id="password"
+              onChange={handleChange}
+              value={password}
+              className={styles.inputField}
+            />
+            <button className={styles.button}>Hop back in →</button>
+            {error && <p className={styles.error}>{error}</p>}
+          </form>
+          <Link href="/signup">
+            <p className={styles.centeredText}>Still need to sign up?</p>
+          </Link>
+        </div>
         <Footer/>
       </main>
     </div>

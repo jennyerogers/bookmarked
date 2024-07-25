@@ -1,10 +1,10 @@
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import { useState } from "react";
-import Link from "next/link"; 
-import { withIronSessionSsr } from "iron-session/next";
-import sessionOptions from "../config/session";
-import styles from "../styles/search.module.css";
+import Header from "../components/Header"
+import Footer from "../components/Footer"
+import { useState } from "react"
+import Link from "next/link"
+import { withIronSessionSsr } from "iron-session/next"
+import sessionOptions from "../config/session"
+import styles from "../styles/search.module.css"
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
@@ -57,7 +57,7 @@ export default function Search(props) {
           <div>
             <form onSubmit={handleSubmit} className={styles.form}>
               <input
-                placeholder="Search by author, title, and/or keywords"
+                placeholder="Search by author, title, BIN"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 type="text"

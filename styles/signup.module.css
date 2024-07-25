@@ -1,85 +1,116 @@
 .main {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    padding: 20px;
-    max-width: 800px;
-    margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  margin-top: 10px;
+  background-color: #f2efe9; 
+}
+
+.textBoxContainer {
+  background-color: #C3D2B3; 
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 400px; 
+  width: 100%; 
+}
+
+.title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  font-family: 'Forma', sans-serif;
+  letter-spacing: -0.05em;
+}
+
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 400px;
+  margin: 0 auto 20px auto;
+  width: 100%;
+}
+
+.label {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  font-family: 'Georgia', serif;
+}
+
+.inputField {
+  width: 100%; 
+  padding: 8px;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-family: 'Georgia', serif; 
+}
+
+.button {
+  padding: 12px 24px;
+  font-size: 1rem;
+  color: white;
+  background-color: #184D2C; 
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-family: 'Helvetica', sans-serif; 
+}
+
+.button:hover {
+  background-color: #E4EFD9;
+  color: black;
+}
+
+.error {
+  color: rgb(0, 0, 0);
+  margin-top: 0.5rem;
+}
+
+.link {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.link a {
+  color: #0070f3;
+  text-decoration: none;
+}
+
+.link a:hover {
+  color: #005bb5;
+}
+
+/* Media Queries */
+@media (max-width: 480px) { 
+  .main {
+    margin-top: 100px;
   }
-  
+  .textBoxContainer {
+    padding: 1rem; 
+    max-width: 90%; 
+  }
+
   .title {
-    text-align: center;
-    font-size: 2rem;
-    margin-bottom: 2rem;
+    font-size: 1.5rem; 
+    margin-bottom: 1.5rem; 
   }
-  
-  .formContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 400px;
-    margin: 0 auto 20px auto;
-  }
-  
+
   .label {
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
+    font-size: 1rem; 
   }
-  
+
   .inputField {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1rem;
+    font-size: 0.9rem; 
   }
-  
+
   .button {
-    padding: 12px 24px;
-    font-size: 1rem;
-    color: white;
-    background-color: #184d2c;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+    padding: 10px 20px; 
+    font-size: 0.9rem; 
   }
-  
-  .button:hover {
-    background-color: #e4efd9;
-    color: black;
-  }
-  
-  .error {
-    color: red;
-    margin-top: 0.5rem;
-  }
-  
-  .link {
-    margin-top: 1rem;
-    text-align: center;
-  }
-  
-  .link a {
-    color: #0070f3;
-    text-decoration: underline;
-  }
-  
-  .link a:hover {
-    color: #005bb5;
-  }
-  
-  .bookList {
-    list-style-type: none;
-    padding: 0;
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-  }
-  
-  .bookItem {
-    margin-bottom: 10px;
-  }
-  
+}

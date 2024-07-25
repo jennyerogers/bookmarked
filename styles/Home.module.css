@@ -3,13 +3,14 @@
   flex-direction: column;
   justify-content: center; 
   align-items: center;
-  padding: 1rem;
+  padding: 0rem; 
   min-height: 100vh;
+  margin: 0; 
 }
 
 .title {
   text-align: center;
-  margin-bottom: 1rem; 
+  margin-bottom: 1rem;
   font-family: 'Georgia', serif;
 }
 
@@ -33,7 +34,9 @@
 
 .bookmarkedTitle {
   font-family: 'Forma', sans-serif;
-  letter-spacing: -0.05em
+  letter-spacing: -0.05em;
+  margin-top: 0; 
+  margin-bottom: 1rem; 
 }
 
 .description p {
@@ -64,7 +67,7 @@
 
 @media (max-width: 700px) {
   .main {
-    padding: 4rem;
+    padding: 2rem; 
   }
 
   .title {
@@ -121,4 +124,3 @@
     z-index: 1;
   }
 }
-
