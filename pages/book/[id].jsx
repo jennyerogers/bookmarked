@@ -28,7 +28,7 @@ export const getServerSideProps = withIronSessionSsr(
           thumbnail: bookData.volumeInfo.imageLinks?.thumbnail || 'https://via.placeholder.com/128x190?text=NO COVER',
           description: bookData.volumeInfo.description,
           pageCount: bookData.volumeInfo.pageCount,
-          categories: bookData.volumeInfo.categories || [], // Set categories to empty array if undefined
+          categories: bookData.volumeInfo.categories || [], 
           previewLink: bookData.volumeInfo.previewLink,
         };
 

@@ -1,3 +1,10 @@
+Hello, and welcome to Bookmarked, a full-stack web application designed for avid readers and those looking to read more! I designed this app because I often struggle to keep track of the books I want to read. In turn, I read less often. I wanted to change that for myself and others in my position, as well as provide a seamless, easy way for readers to search for books.
+
+View and use my application ['here'](https://bookmarked-app.vercel.app/).
+
+
+
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started

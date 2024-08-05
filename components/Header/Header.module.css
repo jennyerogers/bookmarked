@@ -23,7 +23,7 @@
 
 .logo {
   height: 40px; 
-  width: auto;  
+  width: 40px;  
   transform: scale(1.5); 
   transform-origin: center; 
 }
