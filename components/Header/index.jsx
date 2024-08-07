@@ -15,7 +15,7 @@ export default function Header(props) {
         {props.isLoggedIn ? (
           <>
             <Link href="/search">Search</Link>
-            <Link href="/favorites">Favorites</Link>
+            <Link href="/favorites">Bookshelf</Link>
             <a href="#" onClick={logout}>
               Logout
             </a>
