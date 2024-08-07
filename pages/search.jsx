@@ -61,7 +61,7 @@ export default function Search(props) {
           <div>
             <form onSubmit={handleSubmit} className={styles.form}>
               <input
-                placeholder="Search by author, title, BIN"
+                placeholder="Search by author, title, BIN, ISBN..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 type="text"
