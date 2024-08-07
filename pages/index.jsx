@@ -44,7 +44,7 @@ export default function Home(props) {
             <button className={styles.getStartedButton}>Start browsing →</button>
           </Link>
         ) : (
-          <Link href="/login">
+          <Link href="/signup">
             <button className={styles.getStartedButton}>Get Started →</button>
           </Link>
         )}
